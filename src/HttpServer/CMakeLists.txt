@@ -5,7 +5,10 @@ set(SERVER_SRC HttpServer.cpp)
 add_library(HttpServerLib ${SERVER_SRC})
 
 # Include project and Boost headers
-target_include_directories(HttpServerLib PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS})
+target_include_directories(HttpServerLib 
+  PUBLIC ${CMAKE_SOURCE_DIR}/include/HttpServer ${CMAKE_SOURCE_DIR}/include/Common
+  PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS}
+)
 
 # Link Boost.System to the library
 target_link_libraries(HttpServerLib PRIVATE ${BOOST_LIBRARIES})

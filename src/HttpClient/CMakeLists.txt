@@ -5,7 +5,10 @@ set(CLIENT_SRC HttpClient.cpp)
 add_library(HttpClientLib ${CLIENT_SRC})
 
 # Include Boost and project headers
-target_include_directories(HttpClientLib PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS})
+target_include_directories(HttpClientLib 
+  PUBLIC ${CMAKE_SOURCE_DIR}/include/HttpClient ${CMAKE_SOURCE_DIR}/include/Common
+  PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS}
+)
 
 # Link Boost libraries
 target_link_libraries(HttpClientLib PRIVATE ${BOOST_LIBRARIES})

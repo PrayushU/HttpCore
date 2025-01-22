@@ -1,5 +1,7 @@
 # Minimum required CMake version
 cmake_minimum_required(VERSION 3.15)
+cmake_policy(SET CMP0167 NEW)
+# cmake_minimum_required()
 
 # Project name and version
 project(HttpProject VERSION 1.0 LANGUAGES CXX)
