@@ -1,5 +1,5 @@
 # Define source files for HttpClient
-set(CLIENT_SRC HttpClient.cpp)
+set(CLIENT_SRC SampleHttpClient.cpp HttpClient.cpp)
 
 # Create a library for HttpClient
 add_library(HttpClientLib ${CLIENT_SRC})
@@ -14,7 +14,7 @@ target_include_directories(HttpClientLib
 target_link_libraries(HttpClientLib PRIVATE ${BOOST_LIBRARIES})
 
 # Create an executable for HttpClient
-add_executable(HttpClient ${CLIENT_SRC})
+add_executable(SampleHttpClient ${CLIENT_SRC})
 
 # Link the library and Boost to the executable
-target_link_libraries(HttpClient PRIVATE HttpClientLib ${BOOST_LIBRARIES})
+target_link_libraries(SampleHttpClient PRIVATE HttpClientLib ${BOOST_LIBRARIES})

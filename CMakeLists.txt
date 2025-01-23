@@ -50,5 +50,3 @@ add_custom_target(
 add_subdirectory(src/HttpServer)
 add_subdirectory(src/HttpClient)
 add_subdirectory(tests)
-
-

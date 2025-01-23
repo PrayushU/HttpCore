@@ -3,3 +3,4 @@ bin/
 lib/
 third_party/
 compile_flags.txt
+.cache

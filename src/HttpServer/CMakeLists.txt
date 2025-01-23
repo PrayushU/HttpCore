@@ -18,3 +18,5 @@ add_executable(HttpServer ${SERVER_SRC})
 
 # Link the library and Boost to the executable
 target_link_libraries(HttpServer PRIVATE HttpServerLib ${BOOST_LIBRARIES})
+
+
