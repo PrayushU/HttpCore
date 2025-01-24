@@ -23,7 +23,7 @@ struct Tester {
     auto httpClient = HttpClient::Make(std::move(paramters));
 
     ConnectionParameter connectionParameter;
-    connectionParameter.host = "google.com";
+    connectionParameter.host = "httpbin.org";
     connectionParameter.port = "80";
     httpClient->ConnectAsync(
         std::move(connectionParameter), [httpClient](std::error_code err) {
@@ -33,9 +33,14 @@ struct Tester {
           }
           std::cout << "ConnectAsync succeeded" << std::endl;
 
-          //Chaining, so sendAsync after ConnectAsync
+          // Chaining, so sendAsync after ConnectAsync
+          //GET / HTTP/1.1
+          // Host: httpbin.org
           HttpRequest request;
-          httpClient->SendAsync(request, [](std::error_code err,
+          std::string message = "GET /get HTTP/1.1" "\r\n"
+                                "Host: httpbin.org" "\r\n"
+                                "\r\n";
+          httpClient->SendAsync(message, [](std::error_code err,
                                             HttpResponse response) {
             if (err) {
               std::cout << "error occured. Error message: " << err.message()
@@ -43,14 +48,12 @@ struct Tester {
               return;
             }
 
-            std::cout << "Request succeeded. " << std::endl
-                      << "Response code : " << response.StatusCode << std::endl
-                      << "Response body : " << response.Body << std::endl
-                      << std::endl;
+            std::cout << "Request succeeded:" << std::endl << response.Data << std::endl;
+            // << "Response code : " << response.StatusCode << std::endl
+            // << "Response body : " << response.Body << std::endl
+            // << std::endl;
           });
         });
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 };
 
