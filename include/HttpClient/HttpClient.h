@@ -4,6 +4,8 @@
 #include "ConnectionParameter.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
+#include "HttpResponsePopulator.h"
+#include "HttpResponseStreamParser.h"
 #include <HttpClientParamters.h>
 #include <boost/asio.hpp>
 #include <iostream>
@@ -65,13 +67,16 @@ private:
   explicit HttpClient(HttpClientParameters httpClientParameters)
       : _httpClientParameters(std::move(httpClientParameters)),
         _resolver(_httpClientParameters._executor),
-        _socket(_httpClientParameters._executor) {}
+        _socket(_httpClientParameters._executor),
+        _httpResponseStreamParser(&_httpResponsePopulator) {}
 
   HttpClientParameters _httpClientParameters;
   boost::asio::ip::tcp::resolver _resolver;
   boost::asio::ip::tcp::socket _socket;
   boost::asio::streambuf _request;
   boost::asio::streambuf _response;
+  HttpResponsePopulator _httpResponsePopulator; 
+  HttpResponseStreamParser _httpResponseStreamParser;
 
   void DeferDelection() {
     boost::asio::post(_httpClientParameters._executor,
@@ -97,7 +102,7 @@ private:
   void ReadResponseAsync(boost::asio::ip::tcp::socket &socket,
                          Callable callable) {
     boost::asio::async_read_until(
-        socket, _response, "\r\n\r\n", // using terminal case to read until this
+        socket, _response, _httpResponseStreamParser,
         [this, sharedThis = this->shared_from_this(),
          f = std::move(callable)](boost::system::error_code err, size_t) {
           if (err) {
@@ -109,8 +114,7 @@ private:
                            std::istreambuf_iterator<char>()};
 
           HttpResponse response;
-          response.Data = std::move(
-              data); // move the data from data above to the reponse read
+          response.Header = _httpResponsePopulator.ReadHeaderData();
           f(std::error_code(), std::move(response));
         });
   }

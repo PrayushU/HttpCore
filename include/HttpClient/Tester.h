@@ -34,25 +34,30 @@ struct Tester {
           std::cout << "ConnectAsync succeeded" << std::endl;
 
           // Chaining, so sendAsync after ConnectAsync
-          //GET / HTTP/1.1
+          // GET / HTTP/1.1
           // Host: httpbin.org
           HttpRequest request;
-          std::string message = "GET /get HTTP/1.1" "\r\n"
-                                "Host: httpbin.org" "\r\n"
+          std::string message = "GET /get HTTP/1.1"
+                                "\r\n"
+                                "Host: httpbin.org"
+                                "\r\n"
                                 "\r\n";
-          httpClient->SendAsync(message, [](std::error_code err,
-                                            HttpResponse response) {
-            if (err) {
-              std::cout << "error occured. Error message: " << err.message()
-                        << std::endl;
-              return;
-            }
+          httpClient->SendAsync(
+              message, [](std::error_code err, HttpResponse response) {
+                if (err) {
+                  std::cout << "error occured. Error message: " << err.message()
+                            << std::endl;
+                  return;
+                }
 
-            std::cout << "Request succeeded:" << std::endl << response.Data << std::endl;
-            // << "Response code : " << response.StatusCode << std::endl
-            // << "Response body : " << response.Body << std::endl
-            // << std::endl;
-          });
+                std::cout << "Request succeeded:" << std::endl;
+                for (auto &startLinePart : response.Header.StartLine.parts) {
+                  std::cout << startLinePart << " - ";
+                }
+                // << "Response code : " << response.StatusCode << std::endl
+                // << "Response body : " << response.Body << std::endl
+                // << std::endl;
+              });
         });
   }
 };
