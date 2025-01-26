@@ -20,7 +20,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 include_directories(include)
 
 # Find Boost (specify Asio and its dependencies)
-find_package(Boost 1.70 REQUIRED COMPONENTS system)
+find_package(Boost 1.70 REQUIRED COMPONENTS system url)
 
 if (Boost_FOUND)
     message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")

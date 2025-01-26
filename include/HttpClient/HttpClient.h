@@ -6,6 +6,7 @@
 #include "HttpResponse.h"
 #include "HttpResponsePopulator.h"
 #include "HttpResponseStreamParser.h"
+#include "HttpRequestSerialiser.h"
 #include <HttpClientParamters.h>
 #include <boost/asio.hpp>
 #include <iostream>
@@ -56,9 +57,9 @@ struct HttpClient : std::enable_shared_from_this<HttpClient> {
   }
 
   template <typename Callable>
-  void SendAsync(const std::string &httpMessageContent, Callable callable) {
+  void SendAsync(const HttpRequest& httpRequest, Callable callable) {
     ReadResponseAsync(_socket, std::move(callable));
-    SendMessageAsync(_socket, httpMessageContent);
+    SendMessageAsync(_socket, HttpRequestSerialiser{httpRequest}());
   }
 
 private:

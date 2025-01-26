@@ -5,10 +5,10 @@
 #include "HttpClient.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
+#include "RequestGenerators.h"
 #include <boost/asio.hpp>
 #include <iostream>
 #include <system_error>
-
 struct Tester {
 
   boost::asio::any_io_executor _executer;
@@ -23,28 +23,22 @@ struct Tester {
 
     auto httpClient = HttpClient::Make(std::move(paramters));
 
-    ConnectionParameter connectionParameter;
-    connectionParameter.host = "httpbin.org";
-    connectionParameter.port = "80";
+    std::string link = "http://httpbin.org/get";
+
+    ConnectionParameter connectionParameter =
+        make_connection_parameter(link);
+
     httpClient->ConnectAsync(
-        std::move(connectionParameter), [httpClient](std::error_code err) {
+        std::move(connectionParameter), [httpClient, link](std::error_code err) {
           if (err) {
             std::cout << "ConnectAsync failed" << std::endl;
             return;
           }
           std::cout << "ConnectAsync succeeded" << std::endl;
 
-          // Chaining, so sendAsync after ConnectAsync
-          // GET / HTTP/1.1
-          // Host: httpbin.org
-          HttpRequest request;
-          std::string message = "GET /get HTTP/1.1"
-                                "\r\n"
-                                "Host: httpbin.org"
-                                "\r\n"
-                                "\r\n";
+          HttpRequest request = make_get_request(link);
           httpClient->SendAsync(
-              message, [](std::error_code err, HttpResponse response) {
+              request, [](std::error_code err, HttpResponse response) {
                 if (err) {
                   std::cout << "error occured. Error message: " << err.message()
                             << std::endl;
