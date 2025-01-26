@@ -52,8 +52,6 @@ struct HttpClient : std::enable_shared_from_this<HttpClient> {
                 f2(std::error_code());
                 DeferDelection();
               });
-          // std::cout << "successfully resolved " << std::endl;
-          // f(std::error_code());
         });
   }
 
@@ -75,7 +73,7 @@ private:
   boost::asio::ip::tcp::socket _socket;
   boost::asio::streambuf _request;
   boost::asio::streambuf _response;
-  HttpResponsePopulator _httpResponsePopulator; 
+  HttpResponsePopulator _httpResponsePopulator;
   HttpResponseStreamParser _httpResponseStreamParser;
 
   void DeferDelection() {
@@ -110,12 +108,7 @@ private:
             return;
           }
 
-          std::string data{std::istreambuf_iterator<char>(&_response),
-                           std::istreambuf_iterator<char>()};
-
-          HttpResponse response;
-          response.Header = _httpResponsePopulator.ReadHeaderData();
-          f(std::error_code(), std::move(response));
+          f(std::error_code(), std::move(_httpResponsePopulator.TheResponse()));
         });
   }
 };

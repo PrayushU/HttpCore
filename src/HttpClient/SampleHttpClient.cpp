@@ -8,6 +8,7 @@ int main() {
   std::cout << "Inside cpp file" << std::endl;
 
   boost::asio::io_context context;
+  std::cout <<"Started" <<std::endl;
   {
     auto work = boost::asio::make_work_guard(context);
 

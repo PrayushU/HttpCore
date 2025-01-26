@@ -10,6 +10,7 @@
 #include <system_error>
 
 struct Tester {
+
   boost::asio::any_io_executor _executer;
 
   explicit Tester(boost::asio::io_context &ioContext)
@@ -50,15 +51,25 @@ struct Tester {
                   return;
                 }
 
-                std::cout << "Request succeeded:" << std::endl;
-                for (auto &startLinePart : response.Header.StartLine.parts) {
-                  std::cout << startLinePart << " - ";
-                }
-                // << "Response code : " << response.StatusCode << std::endl
-                // << "Response body : " << response.Body << std::endl
-                // << std::endl;
+                std::cout << "Request succeeded:" << std::endl << std::endl;
+
+                print(response);
               });
         });
+  }
+
+  static void print(HttpResponse &response) {
+
+    for (auto &startLinePart : response.Header.StartLine.parts) {
+      std::cout << startLinePart << " ";
+    }
+    std::cout << std::endl;
+
+    for (auto &header : response.Header.Headers) {
+      std::cout << header.Name << ": " << header.Value << std::endl;
+    }
+
+    std::cout << std::endl << response.Body;
   }
 };
 
