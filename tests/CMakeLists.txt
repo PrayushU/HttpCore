@@ -1,10 +1,10 @@
 # Define test executables
 add_executable(test_HttpServer test_HttpServer.cpp)
-add_executable(test_HttpClient test_HttpClient.cpp)
+add_executable(test_HttpClient test_HttpClient.cpp catch_amalgamated.cpp)
 
 # Include headers for tests
-target_include_directories(test_HttpServer PRIVATE ${CMAKE_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
-target_include_directories(test_HttpClient PRIVATE ${CMAKE_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
+target_include_directories(test_HttpServer PRIVATE ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/Tests ${Boost_INCLUDE_DIRS})
+target_include_directories(test_HttpClient PRIVATE ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/include/Tests ${Boost_INCLUDE_DIRS})
 
 # Link the libraries to the test executables
 target_link_libraries(test_HttpServer PRIVATE HttpServerLib)

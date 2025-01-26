@@ -6,9 +6,12 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "RequestGenerators.h"
-#include <boost/asio.hpp>
 #include <iostream>
+#include <boost/asio.hpp>
+#include <boost/asio/ssl/context.hpp>
 #include <system_error>
+// #include <boost/beast/ssl.hpp>
+
 struct Tester {
 
   boost::asio::any_io_executor _executer;
@@ -20,18 +23,20 @@ struct Tester {
 
     HttpClientParameters paramters;
     paramters._executor = _executer;
+    paramters._sslContext = PrepareSSLContext();
 
     auto httpClient = HttpClient::Make(std::move(paramters));
 
-    std::string link = "http://httpbin.org/get";
+    std::string link = "https://httpbin.org/get";
 
-    ConnectionParameter connectionParameter =
-        make_connection_parameter(link);
+    ConnectionParameter connectionParameter = make_connection_parameter(link);
+    // std::cout <<"[DEBUG] useTls: " << connectionParameter.useTls << std::endl;
 
     httpClient->ConnectAsync(
-        std::move(connectionParameter), [httpClient, link](std::error_code err) {
+        std::move(connectionParameter),
+        [httpClient, link](std::error_code err) {
           if (err) {
-            std::cout << "ConnectAsync failed" << std::endl;
+            std::cout << "ConnectAsync failed: " << err.message() << std::endl;
             return;
           }
           std::cout << "ConnectAsync succeeded" << std::endl;
@@ -64,6 +69,22 @@ struct Tester {
     }
 
     std::cout << std::endl << response.Body;
+  }
+
+  std::shared_ptr<boost::asio::ssl::context> PrepareSSLContext() {
+    using namespace boost::asio;
+
+    auto sslContext =
+        std::make_shared<ssl::context>(boost::asio::ssl::context::tlsv12);
+    // sslContext->set_verify_mode(ssl::verify_peer);
+    sslContext->set_verify_mode(ssl::verify_none);
+
+    sslContext->set_verify_callback(
+        [](bool preVerified, ssl::verify_context &verifyContext) {
+          // return preVerified;
+          return true;
+        });
+    return sslContext;
   }
 };
 

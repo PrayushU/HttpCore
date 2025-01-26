@@ -7,16 +7,16 @@ add_library(HttpServerLib ${SERVER_SRC})
 # Include project and Boost headers
 target_include_directories(HttpServerLib 
   PUBLIC ${CMAKE_SOURCE_DIR}/include/HttpServer ${CMAKE_SOURCE_DIR}/include/Common
-  PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS}
+  PRIVATE ${CMAKE_SOURCE_DIR}/include ${BOOST_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIRS}
 )
 
 # Link Boost.System to the library
-target_link_libraries(HttpServerLib PRIVATE ${BOOST_LIBRARIES})
+target_link_libraries(HttpServerLib PRIVATE ${BOOST_LIBRARIES} ${OPENSSL_LIBRARIES})
 
 # Create an executable for HttpServer
 add_executable(HttpServer ${SERVER_SRC})
 
 # Link the library and Boost to the executable
-target_link_libraries(HttpServer PRIVATE HttpServerLib ${BOOST_LIBRARIES})
+target_link_libraries(HttpServer PRIVATE HttpServerLib ${BOOST_LIBRARIES} ${OPENSSL_LIBRARIES})
 
 

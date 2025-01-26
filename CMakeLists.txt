@@ -21,7 +21,6 @@ include_directories(include)
 
 # Find Boost (specify Asio and its dependencies)
 find_package(Boost 1.70 REQUIRED COMPONENTS system url)
-
 if (Boost_FOUND)
     message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")
     message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
@@ -29,10 +28,35 @@ else()
     message(FATAL_ERROR "Boost not found!")
 endif()
 
+
+
 # Pass Boost variables to subdirectories
 set(BOOST_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
 set(BOOST_LIBRARIES ${Boost_LIBRARIES})
 set(BOOST_FOUND ${Boost_FOUND})
+
+# Find OpenSSL
+find_package(OpenSSL REQUIRED)
+if (OPENSSL_FOUND)
+    message(STATUS "OpenSSL found: ${OPENSSL_INCLUDE_DIR}")
+    message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+else()
+    message(FATAL_ERROR "OpenSSL not found!")
+endif()
+
+
+# To include OpenSSL
+find_package(OpenSSL REQUIRED)
+if(OpenSSL_FOUND)
+    message(STATUS "OpenSSL version: ${OPENSSL_VERSION}")
+    message(STATUS "OpenSSL found: ${OPENSSL_INCLUDE_DIR}")
+    message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+else()
+    message(FATAL_ERROR "OpenSSL not found!")
+endif()
+
+set(OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
+set(OPENSSL_LIBRARIES ${OPENSSL_LIBRARIES})
 
 # Generate compile_flags.txt for LSPs like clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
