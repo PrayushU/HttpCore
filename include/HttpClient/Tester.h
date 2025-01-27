@@ -45,7 +45,7 @@ struct Tester {
           httpClient->SendAsync(
               request, [](std::error_code err, HttpResponse response) {
                 if (err) {
-                  std::cout << "error occured. Error message: " << err.message()
+              std::cout << "Error occured. Error message: " << err.message()
                             << std::endl;
                   return;
                 }
